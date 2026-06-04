@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { ChevronLeft, ChevronRight, CalendarRange } from 'lucide-react';
+import { getGameColor } from '../utils/sheetLoader';
 import './TimelineView.css';
 
 // Helper to convert hex to rgb string for translucent styles

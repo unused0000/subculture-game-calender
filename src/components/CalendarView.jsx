@@ -25,7 +25,7 @@ function isEventActiveOnDay(event, dayDate) {
   return start <= dayEnd && end >= dayStart;
 }
 
-function CalendarView({ currentDate, schedules, onSelectEvent, onPrevMonth, onNextMonth, onToday }) {
+function CalendarView({ currentDate, schedules, onSelectEvent, onPrevMonth, onNextMonth, onToday, onShowDayEvents }) {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
@@ -155,16 +155,18 @@ function CalendarView({ currentDate, schedules, onSelectEvent, onPrevMonth, onNe
                         onClick={() => onSelectEvent(event)}
                         title={`[${event.game}] ${event.title}`}
                       >
-                        [{event.game}] {event.title}
+                        <span className="cal-game-label">{event.game}</span>
+                        <span className="cal-separator">|</span>
+                        <span className="cal-event-title">{event.title}</span>
                       </div>
                     );
                   })}
                   {hiddenCount > 0 && (
                     <div 
                       className="calendar-more-indicator"
-                      onClick={() => {
-                        // Select the first hidden event, or we can prompt them
-                        onSelectEvent(dayEvents[3]);
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onShowDayEvents(cell.date, dayEvents);
                       }}
                     >
                       + {hiddenCount}개 더 보기

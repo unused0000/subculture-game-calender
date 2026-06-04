@@ -68,13 +68,72 @@ export function getGameColor(gameName, customColor) {
   const matched = GAME_COLORS[gameName];
   if (matched) return matched;
 
-  // Simple string hashing to generate a stable, beautiful HSL color
   let hash = 0;
   for (let i = 0; i < gameName.length; i++) {
     hash = gameName.charCodeAt(i) + ((hash << 5) - hash);
   }
   const hue = Math.abs(hash % 360);
   return `hsl(${hue}, 75%, 60%)`;
+}
+
+// Generates a slightly shifted color (variation) based on game and title to differentiate multiple events of same game
+export function getEventColorWithVariation(gameName, title, customColor) {
+  const baseColor = getGameColor(gameName, customColor);
+  
+  if (baseColor.startsWith("hsl")) {
+    const match = baseColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+    if (match) {
+      const h = parseInt(match[1], 10);
+      const s = parseInt(match[2], 10);
+      const l = parseInt(match[3], 10);
+      
+      let titleHash = 0;
+      for (let i = 0; i < title.length; i++) {
+        titleHash = title.charCodeAt(i) + ((titleHash << 5) - titleHash);
+      }
+      const hueShift = ((Math.abs(titleHash) % 5) - 2) * 12; // -24, -12, 0, 12, 24
+      const newHue = (h + hueShift + 360) % 360;
+      return `hsl(${newHue}, ${s}%, ${l}%)`;
+    }
+    return baseColor;
+  }
+  
+  if (!baseColor.startsWith("#")) return baseColor;
+  
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) {
+    hash = title.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const hueShift = ((Math.abs(hash) % 5) - 2) * 12; // -24, -12, 0, 12, 24
+  if (hueShift === 0) return baseColor;
+
+  let r = parseInt(baseColor.substring(1, 3), 16) / 255;
+  let g = parseInt(baseColor.substring(3, 5), 16) / 255;
+  let b = parseInt(baseColor.substring(5, 7), 16) / 255;
+
+  let max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+
+  if (max === min) {
+    h = s = 0;
+  } else {
+    let d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+      case g: h = (b - r) / d + 2; break;
+      case b: h = (r - g) / d + 4; break;
+    }
+    h /= 6;
+  }
+
+  h = Math.round(h * 360);
+  s = Math.round(s * 100);
+  l = Math.round(l * 100);
+
+  let newHue = (h + hueShift + 360) % 360;
+  return `hsl(${newHue}, ${s}%, ${l}%)`;
 }
 
 // Normalized event type helper (supports both English and Korean inputs from sheet)
@@ -229,7 +288,7 @@ export async function loadSchedules(sheetUrl = DEFAULT_SHEET_URL) {
     console.log("No spreadsheet URL provided. Loading mock data...");
     return MOCK_SCHEDULES.map(item => ({
       ...item,
-      color: getGameColor(item.game, item.color)
+      color: getEventColorWithVariation(item.game, item.title, item.color)
     }));
   }
 
@@ -281,7 +340,7 @@ export async function loadSchedules(sheetUrl = DEFAULT_SHEET_URL) {
         end_date,
         link,
         description,
-        color: getGameColor(game, rawColor)
+        color: getEventColorWithVariation(game, title, rawColor)
       });
     }
 
@@ -290,7 +349,7 @@ export async function loadSchedules(sheetUrl = DEFAULT_SHEET_URL) {
     console.error("Failed to fetch Google Sheets data. Falling back to mock data.", error);
     return MOCK_SCHEDULES.map(item => ({
       ...item,
-      color: getGameColor(item.game, item.color)
+      color: getEventColorWithVariation(item.game, item.title, item.color)
     }));
   }
 }

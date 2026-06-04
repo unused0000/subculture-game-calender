@@ -25,6 +25,7 @@ function App() {
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'timeline'
   const [currentDate, setCurrentDate] = useState(new Date(2026, 5, 4)); // Set to 2026-06-04 as base date
   const [activeEvent, setActiveEvent] = useState(null);
+  const [activeDayEvents, setActiveDayEvents] = useState(null);
   const [showSheetModal, setShowSheetModal] = useState(false);
   const [tempSheetUrl, setTempSheetUrl] = useState(sheetUrl);
 
@@ -308,6 +309,7 @@ function App() {
               onPrevMonth={handlePrevDate}
               onNextMonth={handleNextDate}
               onToday={handleTodayDate}
+              onShowDayEvents={(date, events) => setActiveDayEvents({ date, events })}
             />
           ) : (
             <TimelineView 
@@ -348,6 +350,65 @@ function App() {
           event={activeEvent} 
           onClose={() => setActiveEvent(null)} 
         />
+      )}
+
+      {/* Day Events List Modal */}
+      {activeDayEvents && (
+        <div className="sheet-modal-overlay" onClick={() => setActiveDayEvents(null)}>
+          <div className="glass sheet-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <div className="sheet-modal-header">
+              <h2 style={{ fontFamily: 'var(--font-display)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.25rem' }}>
+                <span>📅</span>
+                <span>{activeDayEvents.date.getFullYear()}년 {activeDayEvents.date.getMonth() + 1}월 {activeDayEvents.date.getDate()}일 일정</span>
+              </h2>
+              <button className="icon-btn" onClick={() => setActiveDayEvents(null)}>
+                <X size={16} />
+              </button>
+            </div>
+            
+            <div className="sheet-modal-body" style={{ maxHeight: '350px', overflowY: 'auto', gap: '0.75rem', paddingRight: '0.25rem' }}>
+               {activeDayEvents.events.map(event => {
+                 let badgeClass = '';
+                 let typeText = '';
+                 if (event.type === 'Update') { badgeClass = 'badge-update'; typeText = '업데이트'; }
+                 else if (event.type === 'Event') { badgeClass = 'badge-event'; typeText = '이벤트'; }
+                 else if (event.type === 'Stream') { badgeClass = 'badge-stream'; typeText = '공식방송'; }
+                 else { badgeClass = 'badge-banner'; typeText = '픽업'; }
+
+                 return (
+                   <div 
+                     key={event.id}
+                     className="glass-interactive"
+                     style={{
+                       padding: '1rem',
+                       borderRadius: '12px',
+                       cursor: 'pointer',
+                       borderLeft: `4px solid ${event.color}`,
+                       display: 'flex',
+                       alignItems: 'center',
+                       justifyContent: 'space-between',
+                       gap: '1rem',
+                       background: 'rgba(30, 41, 59, 0.3)',
+                       marginBottom: '0.5rem'
+                     }}
+                     onClick={() => {
+                       setActiveEvent(event);
+                       setActiveDayEvents(null);
+                     }}
+                   >
+                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', overflow: 'hidden' }}>
+                       <span style={{ fontSize: '0.75rem', fontWeight: 700, color: event.color }}>{event.game}</span>
+                       <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                         {event.title}
+                       </span>
+                     </div>
+                     <span className={`badge ${badgeClass}`} style={{ flexShrink: 0 }}>{typeText}</span>
+                   </div>
+                 );
+               })}
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Sheet Configuration Modal */}
