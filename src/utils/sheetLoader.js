@@ -1,7 +1,7 @@
 // Google Sheet Loader utility for parsing published CSV
 
 // Default config: Paste your published CSV link here.
-export const DEFAULT_SHEET_URL = "";
+export const DEFAULT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgifVL1CBKH5qvgZMW_DMKSF7tG4HwyUZN1ZVMyVcO-Mv1hgL3NPNIfvm6QajFRui2hla6vDy3kQdN/pub?output=csv";
 
 // Helper to parse standard CSV text to array of arrays
 export function parseCSV(text) {
