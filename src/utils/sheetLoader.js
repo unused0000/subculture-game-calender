@@ -54,7 +54,9 @@ export const GAME_COLORS = {
   "명조:Wuthering waves": "#4b5563",
   "명조": "#4b5563",
   "명일방주: 엔드필드": "#9ca3af", // Light grey (밝은 회색)
-  "이환 Neverness to everness": "#10b981" // Greenish (초록 계열)
+  "이환 Neverness to everness": "#10b981", // Greenish (초록 계열)
+  "이환 (Neverness to everness)": "#10b981",
+  "이환": "#10b981"
 };
 
 // Fallback color generator for unknown games
