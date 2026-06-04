@@ -19,7 +19,7 @@ function App() {
   // Filter States
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGames, setSelectedGames] = useState([]);
-  const [selectedTypes, setSelectedTypes] = useState(['Update', 'Event', 'Banner']);
+  const [selectedTypes, setSelectedTypes] = useState(['Update', 'Event', 'Stream', 'Banner']);
   
   // Display States
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'timeline'
@@ -206,7 +206,7 @@ function App() {
                 }}
                 onClick={() => toggleTypeFilter('Update')}
               >
-                버전 업데이트
+                업데이트
               </span>
               <span 
                 className={`pill badge-event ${selectedTypes.includes('Event') ? 'active' : ''}`}
@@ -220,6 +220,17 @@ function App() {
                 이벤트
               </span>
               <span 
+                className={`pill badge-stream ${selectedTypes.includes('Stream') ? 'active' : ''}`}
+                style={{
+                  '--active-bg': 'rgba(236, 72, 153, 0.25)',
+                  '--active-border': 'var(--stream-accent)',
+                  '--active-shadow': 'rgba(236, 72, 153, 0.15)'
+                }}
+                onClick={() => toggleTypeFilter('Stream')}
+              >
+                공식방송
+              </span>
+              <span 
                 className={`pill badge-banner ${selectedTypes.includes('Banner') ? 'active' : ''}`}
                 style={{
                   '--active-bg': 'rgba(99, 102, 241, 0.25)',
@@ -228,7 +239,7 @@ function App() {
                 }}
                 onClick={() => toggleTypeFilter('Banner')}
               >
-                기타 / 기원 / 픽업
+                픽업
               </span>
             </div>
           </div>
@@ -315,15 +326,19 @@ function App() {
       <footer className="legend-panel">
         <div className="legend-item">
           <span className="legend-color badge-update" style={{ width: 12, height: 12 }}></span>
-          <span>버전 업데이트</span>
+          <span>업데이트</span>
         </div>
         <div className="legend-item">
           <span className="legend-color badge-event" style={{ width: 12, height: 12 }}></span>
           <span>이벤트</span>
         </div>
         <div className="legend-item">
+          <span className="legend-color badge-stream" style={{ width: 12, height: 12 }}></span>
+          <span>공식방송</span>
+        </div>
+        <div className="legend-item">
           <span className="legend-color badge-banner" style={{ width: 12, height: 12 }}></span>
-          <span>기타 / 픽업</span>
+          <span>픽업</span>
         </div>
       </footer>
 
@@ -365,7 +380,7 @@ function App() {
                   <li><strong>게시(Publish)</strong> 버튼을 클릭하고 생성된 웹 링크를 복사하여 위 칸에 넣어줍니다.</li>
                 </ol>
                 <span style={{ fontSize: '0.75rem', marginTop: '0.5rem', color: 'var(--primary-accent)' }}>
-                  * 비워두면 기본 샘플 일정(원신, 스타레일, 블루 아카이브, 젠레스 존 제로)이 로드됩니다.
+                  * 비워두면 기본 샘플 일정(스타레일, 젠레스 존 제로, 명조, 엔드필드, 이환)이 로드됩니다.
                 </span>
               </div>
             </div>

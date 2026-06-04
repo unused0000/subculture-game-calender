@@ -93,10 +93,12 @@ function EventDetailModal({ event, onClose }) {
             <span className="modal-game-name" style={{ color: event.color }}>{event.game}</span>
             <span className={`badge ${
               event.type === 'Update' ? 'badge-update' : 
-              event.type === 'Event' ? 'badge-event' : 'badge-banner'
+              event.type === 'Event' ? 'badge-event' : 
+              event.type === 'Stream' ? 'badge-stream' : 'badge-banner'
             }`}>
-              {event.type === 'Update' ? '버전 업데이트' : 
-               event.type === 'Event' ? '이벤트' : '기타/픽업'}
+              {event.type === 'Update' ? '업데이트' : 
+               event.type === 'Event' ? '이벤트' : 
+               event.type === 'Stream' ? '공식방송' : '픽업'}
             </span>
           </div>
           <h2 className="modal-title">{event.title}</h2>

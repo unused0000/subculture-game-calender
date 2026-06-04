@@ -209,6 +209,7 @@ function TimelineView({ currentDate, schedules, onSelectEvent, onPrevRange, onNe
                         let barClass = '';
                         if (event.type === 'Update') barClass = 'bar-type-update';
                         else if (event.type === 'Event') barClass = 'bar-type-event';
+                        else if (event.type === 'Stream') barClass = 'bar-type-stream';
                         else barClass = 'bar-type-banner';
 
                         return (

@@ -66,7 +66,7 @@ function CalendarView({ currentDate, schedules, onSelectEvent, onPrevMonth, onNe
     return schedules.filter(event => isEventActiveOnDay(event, date))
       .sort((a, b) => {
         // Order by Type: Update -> Event -> Banner
-        const typeOrder = { Update: 0, Event: 1, Banner: 2 };
+        const typeOrder = { Update: 0, Event: 1, Stream: 2, Banner: 3 };
         const orderA = typeOrder[a.type] !== undefined ? typeOrder[a.type] : 99;
         const orderB = typeOrder[b.type] !== undefined ? typeOrder[b.type] : 99;
         if (orderA !== orderB) return orderA - orderB;
@@ -141,6 +141,7 @@ function CalendarView({ currentDate, schedules, onSelectEvent, onPrevMonth, onNe
                     let typeClass = '';
                     if (event.type === 'Update') typeClass = 'event-block-update';
                     else if (event.type === 'Event') typeClass = 'event-block-event';
+                    else if (event.type === 'Stream') typeClass = 'event-block-stream';
                     else typeClass = 'event-block-banner';
 
                     return (

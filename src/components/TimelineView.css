@@ -231,3 +231,10 @@
   color: var(--game-theme-color);
   border: 1px dashed rgba(var(--game-theme-rgb), 0.6);
 }
+
+.bar-type-stream {
+  background: rgba(var(--game-theme-rgb), 0.18);
+  color: var(--game-theme-color);
+  border: 1px solid rgba(var(--game-theme-rgb), 0.6);
+  border-left: 4px solid var(--game-theme-color);
+}

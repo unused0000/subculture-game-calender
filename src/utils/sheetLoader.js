@@ -1,8 +1,7 @@
 // Google Sheet Loader utility for parsing published CSV
 
-// Default config: You can paste your published CSV link here.
-// To get this link: Google Sheets -> File -> Share -> Publish to web -> Select "Entire Document" or sheet and choose "CSV" -> Copy URL.
-export const DEFAULT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgifVL1CBKH5qvgZMW_DMKSF7tG4HwyUZN1ZVMyVcO-Mv1hgL3NPNIfvm6QajFRui2hla6vDy3kQdN/pub?output=csv";
+// Default config: Paste your published CSV link here.
+export const DEFAULT_SHEET_URL = "";
 
 // Helper to parse standard CSV text to array of arrays
 export function parseCSV(text) {
@@ -47,19 +46,15 @@ export function parseCSV(text) {
   return lines;
 }
 
-// Default game colors if not specified in Google Sheets
+// User-specified Game Colors mapping
 export const GAME_COLORS = {
-  "붕괴: 스타레일": "#9B51E0", // Violet / Astral purple
-  "Honkai: Star Rail": "#9B51E0",
-  "이환 Neverness to everness": "#1A9CFC", // Bright cyan
-  "Neverness to everness": "#1A9CFC",
-  "젠레스 존 제로": "#E2B93C", // Neon yellow/orange
-  "Zenless Zone Zero": "#E2B93C",
-  "페이트/그랜드 오더": "#E03C3C", // Red
-  "Fate/Grand Order": "#E03C3C",
-  "명조": "#2D3748", // Dark Slate
-  "Wuthering Waves": "#2D3748",
-  "명일방주: 엔드필드": "#9e9e9e",
+  "붕괴: 스타레일": "#9B51E0", // Violet / Purple
+  "젠레스 존 제로": "#E2B93C", // Neon Yellow / Gold
+  "명조: Wuthering waves": "#4b5563", // Dark Grey Slate
+  "명조:Wuthering waves": "#4b5563",
+  "명조": "#4b5563",
+  "명일방주: 엔드필드": "#9ca3af", // Light grey (밝은 회색)
+  "이환 Neverness to everness": "#10b981" // Greenish (초록 계열)
 };
 
 // Fallback color generator for unknown games
@@ -80,139 +75,149 @@ export function getGameColor(gameName, customColor) {
   return `hsl(${hue}, 75%, 60%)`;
 }
 
+// Normalized event type helper (supports both English and Korean inputs from sheet)
+export function normalizeType(typeStr) {
+  const clean = typeStr ? typeStr.trim() : "";
+  if (clean === "Update" || clean === "업데이트") return "Update";
+  if (clean === "Event" || clean === "이벤트") return "Event";
+  if (clean === "Stream" || clean === "공식방송") return "Stream";
+  if (clean === "Banner" || clean === "픽업") return "Banner";
+  return "Event"; // Fallback default
+}
+
 // Premium Mock Data spanning June 2026 (relative to Current Local Time: 2026-06-04)
 export const MOCK_SCHEDULES = [
   {
     id: "1",
-    game: "원신",
-    type: "Update",
-    title: "Ver 5.0 나타 신규 지역 대규모 업데이트",
-    start_date: "2026-05-20 11:00",
-    end_date: "2026-07-02 06:00",
-    link: "https://genshin.hoyoverse.com",
-    description: "전쟁의 나라 '나타'가 마침내 개방됩니다! 메인 스토리 제5장 해금 및 불 원소 영웅 아를레키노 복각.",
-    color: "#4A90E2"
-  },
-  {
-    id: "2",
-    game: "원신",
-    type: "Event",
-    title: "나타 축제: 불꽃의 왈츠 페스티벌",
-    start_date: "2026-06-01 10:00",
-    end_date: "2026-06-15 04:00",
-    link: "https://genshin.hoyoverse.com",
-    description: "각종 미니게임 완료 시 이벤트 한정 4성 법구 및 원석 1000개 획득 찬스!",
-    color: "#4A90E2"
-  },
-  {
-    id: "3",
-    game: "원신",
-    type: "Banner",
-    title: "기원: [돌아온 불꽃] 에밀리에 & 시그윈 픽업",
-    start_date: "2026-06-01 18:00",
-    end_date: "2026-06-21 15:00",
-    link: "https://genshin.hoyoverse.com",
-    description: "나타 첫 5성 서포터 에밀리에와 멜뤼진 힐러 시그윈 픽업 이벤트 진행.",
-    color: "#4A90E2"
-  },
-  {
-    id: "4",
     game: "붕괴: 스타레일",
     type: "Update",
-    title: "Ver 3.2 은하 열차 정차역: 페나코니 에필로그",
+    title: "Ver 3.2 페나코니 에필로그 대규모 업데이트",
     start_date: "2026-06-10 11:00",
     end_date: "2026-07-22 06:00",
     link: "https://hsr.hoyoverse.com",
-    description: "페나코니 개척 스토리 완결. 새로운 운명의 길 개척자 전직 해금.",
+    description: "페나코니 개척 스토리 완결. 새로운 운명의 길 개척자 전직 해금 및 다채로운 개척 임무 추가.",
     color: "#9B51E0"
   },
   {
-    id: "5",
+    id: "2",
     game: "붕괴: 스타레일",
     type: "Banner",
-    title: "워프: [밤하늘을 비추는 반딧불이] 반디 & 완·매 복각",
+    title: "워프: [밤하늘을 비추는 반딧불이] 반디 픽업",
     start_date: "2026-06-10 11:00",
     end_date: "2026-07-01 15:00",
     link: "https://hsr.hoyoverse.com",
-    description: "최강의 격파 딜러 반디와 영티어 격파 버퍼 완·매 한정 픽업 워프 개최.",
+    description: "화염 속성의 파멸 캐릭터 '반디'의 한정 픽업 워프 개최.",
     color: "#9B51E0"
   },
   {
-    id: "6",
+    id: "3",
     game: "붕괴: 스타레일",
-    type: "Event",
-    title: "종이새들의 대난투! 보드게임 대작전",
-    start_date: "2026-06-12 12:00",
-    end_date: "2026-06-26 04:00",
+    type: "Stream",
+    title: "Ver 3.3 신규 버전 프리뷰 공식방송",
+    start_date: "2026-06-19 20:30",
+    end_date: "2026-06-19 22:00",
     link: "https://hsr.hoyoverse.com",
-    description: "페나코니 종이새들과 함께 즐기는 멀티플레이어 보드게임 이벤트. 자가성형 합성기 등 푸짐한 보상.",
+    description: "다음 메인 버전의 신규 캐릭터 정보 공개 및 성옥 리딤코드 배포!",
     color: "#9B51E0"
   },
   {
-    id: "7",
-    game: "블루 아카이브",
-    type: "Event",
-    title: "샬레의 해피 발렌타인 순찰 및 순백의 예고장",
-    start_date: "2026-06-03 12:00",
-    end_date: "2026-06-17 11:00",
-    link: "https://bluearchive.nexon.com",
-    description: "선생님을 향한 학생들의 달콤한 초콜릿 배달 대작전! 이벤트 스토리 감상 및 선물 획득.",
-    color: "#1A9CFC"
-  },
-  {
-    id: "8",
-    game: "블루 아카이브",
-    type: "Banner",
-    title: "특별모집: 아루(새해) & 무츠키(새해) 한정 모집 복각",
-    start_date: "2026-06-03 12:00",
-    end_date: "2026-06-17 11:00",
-    link: "https://bluearchive.nexon.com",
-    description: "총력전 헤세드/예로니무스 핵심 딜러인 한정 학생 아루(새해)와 무츠키(새해) 영입 기회.",
-    color: "#1A9CFC"
-  },
-  {
-    id: "9",
-    game: "블루 아카이브",
-    type: "Update",
-    title: "메인 스토리 Vol.1 대책위원회 편 제3장 후반부 공개",
-    start_date: "2026-06-16 14:00",
-    end_date: "2026-06-30 23:59",
-    link: "https://bluearchive.nexon.com",
-    description: "마침내 밝혀지는 유메 선배의 진실과 대책위원회 학생들의 새로운 투쟁 스토리 수록.",
-    color: "#1A9CFC"
-  },
-  {
-    id: "10",
-    game: "젠레스 존 제로",
-    type: "Update",
-    title: "Ver 1.2 칼리돈의 아이들 신규 에피소드",
-    start_date: "2026-06-05 11:00",
-    end_date: "2026-07-15 06:00",
-    link: "https://zzz.hoyoverse.com",
-    description: "아우터 링을 배경으로 펼쳐지는 폭주족 진영 '칼리돈의 아이들' 스토리 공개.",
-    color: "#E2B93C"
-  },
-  {
-    id: "11",
-    game: "젠레스 존 제로",
-    type: "Banner",
-    title: "독점 배포: 제인 도 & 세스 샌드위치 픽업",
-    start_date: "2026-06-05 11:00",
-    end_date: "2026-06-26 15:00",
-    link: "https://zzz.hoyoverse.com",
-    description: "물리 이상 딜러인 제인 도(야수파 간부)와 방어형 물리 서포터 세스 신규 출시.",
-    color: "#E2B93C"
-  },
-  {
-    id: "12",
+    id: "4",
     game: "젠레스 존 제로",
     type: "Event",
     title: "치아키의 골목길 청소 대작전",
-    start_date: "2026-06-15 10:00",
-    end_date: "2026-06-29 04:00",
+    start_date: "2026-06-01 10:00",
+    end_date: "2026-06-15 04:00",
     link: "https://zzz.hoyoverse.com",
-    description: "6단지 골목에 나타난 에테르 감염물들을 소탕하고 비디오 가게 단골 지수를 높이세요.",
+    description: "6단지 골목 청소를 돕고 풍성한 뱃지 및 폴리크롬 보상을 획득하세요.",
     color: "#E2B93C"
+  },
+  {
+    id: "5",
+    game: "젠레스 존 제로",
+    type: "Banner",
+    title: "독점 배포: 엘렌 조 픽업 모집",
+    start_date: "2026-06-05 12:00",
+    end_date: "2026-06-26 15:00",
+    link: "https://zzz.hoyoverse.com",
+    description: "빅토리아 하우스키핑의 얼음 속성 격파 딜러 '엘렌 조' 독점 배포 개시.",
+    color: "#E2B93C"
+  },
+  {
+    id: "6",
+    game: "명조: Wuthering waves",
+    type: "Update",
+    title: "Ver 1.1 승소산 승경 업데이트",
+    start_date: "2026-05-28 11:00",
+    end_date: "2026-07-08 06:00",
+    link: "https://wutheringwaves.kurogames.com",
+    description: "신규 구역 승소산 개방 및 새로운 5성 공명자 금희 출현.",
+    color: "#4b5563"
+  },
+  {
+    id: "7",
+    game: "명조: Wuthering waves",
+    type: "Event",
+    title: "선택 폭풍: 신비한 경지 도전 이벤트",
+    start_date: "2026-06-03 10:00",
+    end_date: "2026-06-24 04:00",
+    link: "https://wutheringwaves.kurogames.com",
+    description: "로그라이크 방식으로 진행되는 특수 던전 완료 시 별의 소리 및 육성 재화 지급.",
+    color: "#4b5563"
+  },
+  {
+    id: "8",
+    game: "명조: Wuthering waves",
+    type: "Stream",
+    title: "Ver 1.2 개발진 토크 공식 라이브 방송",
+    start_date: "2026-06-12 19:00",
+    end_date: "2026-06-12 20:30",
+    link: "https://wutheringwaves.kurogames.com",
+    description: "다음 버전에 대한 로드맵 보고 및 편의성 개편 사항 공유 라이브 방송.",
+    color: "#4b5563"
+  },
+  {
+    id: "9",
+    game: "명일방주: 엔드필드",
+    type: "Update",
+    title: "탈로스-II 지표면 2차 테크니컬 테스트 개시",
+    start_date: "2026-06-05 10:00",
+    end_date: "2026-06-20 18:00",
+    link: "https://endfield.hypergryph.com",
+    description: "새로운 협곡 지형 탐색 및 공업 인프라 구축 핵심 피드백 테스트.",
+    color: "#9ca3af"
+  },
+  {
+    id: "10",
+    game: "명일방주: 엔드필드",
+    type: "Event",
+    title: "산업 기지 전력 활성화 프로토콜",
+    start_date: "2026-06-08 12:00",
+    end_date: "2026-06-18 12:00",
+    link: "https://endfield.hypergryph.com",
+    description: "전력 격자망 최대 출력을 유지하며 미지의 구조물로부터 고가치 자원을 회수하는 전술 연습.",
+    color: "#9ca3af"
+  },
+  {
+    id: "11",
+    game: "이환 Neverness to everness",
+    type: "Stream",
+    title: "세계관 쇼케이스 & 개발 다이어리 첫 공식방송",
+    start_date: "2026-06-04 18:00",
+    end_date: "2026-06-04 19:30",
+    link: "https://nte.perfectworld.com",
+    description: "이환의 독창적인 어반 판타지 오픈월드 탐험 연출 및 차량 튜닝 시스템 최초 공개 방송.",
+    color: "#10b981"
+  },
+  {
+    id: "12",
+    game: "이환 Neverness to everness",
+    type: "Update",
+    title: "1차 글로벌 포커스 그룹 베타 테스트",
+    start_date: "2026-06-15 11:00",
+    end_date: "2026-06-28 23:59",
+    link: "https://nte.perfectworld.com",
+    description: "선발된 인원을 대상으로 도시 내 초자연적 현상 격리 및 보스 전투 검증 테스트.",
+    color: "#10b981"
   }
 ];
 
@@ -258,7 +263,7 @@ export async function loadSchedules(sheetUrl = DEFAULT_SHEET_URL) {
       // Basic validation
       if (!game || !title) continue;
 
-      const type = typeIdx !== -1 && row[typeIdx] ? row[typeIdx].trim() : "Event";
+      const rawType = typeIdx !== -1 && row[typeIdx] ? row[typeIdx].trim() : "이벤트";
       const start_date = startIdx !== -1 && row[startIdx] ? row[startIdx].trim() : "";
       const end_date = endIdx !== -1 && row[endIdx] ? row[endIdx].trim() : "";
       const link = linkIdx !== -1 && row[linkIdx] ? row[linkIdx].trim() : "";
@@ -268,7 +273,7 @@ export async function loadSchedules(sheetUrl = DEFAULT_SHEET_URL) {
       events.push({
         id: `row-${i}`,
         game,
-        type,
+        type: normalizeType(rawType),
         title,
         start_date,
         end_date,
