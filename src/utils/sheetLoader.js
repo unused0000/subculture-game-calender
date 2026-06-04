@@ -2,7 +2,7 @@
 
 // Default config: You can paste your published CSV link here.
 // To get this link: Google Sheets -> File -> Share -> Publish to web -> Select "Entire Document" or sheet and choose "CSV" -> Copy URL.
-export const DEFAULT_SHEET_URL = "";
+export const DEFAULT_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRgifVL1CBKH5qvgZMW_DMKSF7tG4HwyUZN1ZVMyVcO-Mv1hgL3NPNIfvm6QajFRui2hla6vDy3kQdN/pub?output=csv";
 
 // Helper to parse standard CSV text to array of arrays
 export function parseCSV(text) {
@@ -49,18 +49,17 @@ export function parseCSV(text) {
 
 // Default game colors if not specified in Google Sheets
 export const GAME_COLORS = {
-  "원신": "#4A90E2", // Soft Sky Blue
-  "Genshin Impact": "#4A90E2",
   "붕괴: 스타레일": "#9B51E0", // Violet / Astral purple
   "Honkai: Star Rail": "#9B51E0",
-  "블루 아카이브": "#1A9CFC", // Bright cyan
-  "Blue Archive": "#1A9CFC",
+  "이환 Neverness to everness": "#1A9CFC", // Bright cyan
+  "Neverness to everness": "#1A9CFC",
   "젠레스 존 제로": "#E2B93C", // Neon yellow/orange
   "Zenless Zone Zero": "#E2B93C",
   "페이트/그랜드 오더": "#E03C3C", // Red
   "Fate/Grand Order": "#E03C3C",
   "명조": "#2D3748", // Dark Slate
-  "Wuthering Waves": "#2D3748"
+  "Wuthering Waves": "#2D3748",
+  "명일방주: 엔드필드": "#9e9e9e",
 };
 
 // Fallback color generator for unknown games
